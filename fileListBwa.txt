@@ -1,0 +1,6 @@
+/N/dc/projects/waysung/tetrahymena_wt/printIndel/tetrahymena_0.PrintBasesBwa
+/N/dc/projects/waysung/tetrahymena_wt/printIndel/tetrahymena_5.PrintBasesBwa
+/N/dc/projects/waysung/tetrahymena_wt/printIndel/tetrahymena_28.PrintBasesBwa
+/N/dc/projects/waysung/tetrahymena_wt/printIndel/tetrahymena_40.PrintBasesBwa
+/N/dc/projects/waysung/tetrahymena_wt/printIndel/tetrahymena_44.PrintBasesBwa
+/N/dc/projects/waysung/tetrahymena_wt/printIndel/tetrahymena_50.PrintBasesBwa
