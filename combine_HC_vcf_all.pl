@@ -1,0 +1,30 @@
+#! /bin/perl -w
+# do not do too many samples at one time, do 40 samples batches
+$file=$ARGV[0];
+$name=$file;
+open INFO, "$file" or die "cannot open file: $!"; # list file contains line fq names, without the _fq
+# to avoid java outof memory in MarkDuplicate, do: -xmx2g or-XX:-UseGCOverheadLimit
+@array=();
+while ($i=<INFO>) {
+chomp ($i);
+push @array, "--variant $i ";
+}
+print "#!/bin/bash
+#PBS -k o
+#PBS -l nodes=1:ppn=1,walltime=24:00:00
+#PBS -M lc9869\@stu.ouc.edu.cn
+#PBS -m abe
+#PBS -N ".$name."
+#PBS -j oe
+cd /N/dc2/projects/MicroEukMA/students/panjiao/"."\n";
+print 'module load java/jre/1.8.0_73'."\n";
+print "#/N/dc2/projects/MicroEukMA/softwares/samtools-1.3.1/samtools faidx photo.fasta"."\n";
+print '#java -Xmx2g -jar /N/dc2/projects/MicroEukMA/softwares/GATK_3.6/picard-tools-2.5.0/picard.jar CreateSequenceDictionary R= photo.fasta O= photo.dict'."\n";
+print "java -Xmx2g -jar /N/dc2/projects/MicroEukMA/softwares/GATK_3.6/GenomeAnalysisTK.jar -T CombineGVCFs -R photo.fasta ";
+foreach (@array) {
+print "$_";
+}
+print "-o ".$name.".merge.all.g.vcf"."\n";
+print "java -Xmx2g -jar /N/dc2/projects/MicroEukMA/softwares/GATK_3.6/GenomeAnalysisTK.jar -T GenotypeGVCFs -R photo.fasta --includeNonVariantSites --variant ".$name.".merge.all.g.vcf -o ".$name.".all.raw.vcf "."\n";
+print 'java -Xmx2g -jar /N/dc2/projects/MicroEukMA/softwares/GATK_3.6/GenomeAnalysisTK.jar -R photo.fasta -T VariantFiltration -V '.$name.'.all.raw.vcf --filterExpression "QD < 2.0 || FS > 60.0 || MQ < 60.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0" --filterName "my_all_filter" -o '.$name.'.filtered_all.g.vcf'."\n";
+print 'perl GATK.all.line.HC.sites.pl '.$name.'.filtered_all.g.vcf | sort --version-sort > P.analyzed.sites';
